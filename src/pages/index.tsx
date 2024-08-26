@@ -1309,6 +1309,7 @@ const SessionsByCountryMap: FC = function () {
           CN: { visitors: 50016, change: 6 },
           IN: { visitors: 140016, change: 2 },
           BR: { visitors: 40016, change: 5 },
+          VN: { visitors: 100000, change: 5 },
         },
       },
     });

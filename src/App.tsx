@@ -6,7 +6,6 @@ import ForgotPasswordPage from "./pages/authentication/forgot-password";
 import ProfileLockPage from "./pages/authentication/profile-lock";
 import ResetPasswordPage from "./pages/authentication/reset-password";
 import SignInPage from "./pages/authentication/sign-in";
-import SignUpPage from "./pages/authentication/sign-up";
 import EcommerceBillingPage from "./pages/e-commerce/billing";
 import EcommerceInvoicePage from "./pages/e-commerce/invoice";
 import EcommerceProductsPage from "./pages/e-commerce/products";
@@ -24,6 +23,7 @@ import UserListPage from "./pages/users/list";
 import UserProfilePage from "./pages/users/profile";
 import UserSettingsPage from "./pages/users/settings";
 import FlowbiteWrapper from "./components/flowbite-wrapper";
+import OrderPage from "./pages/e-commerce/order";
 
 const App: FC = function () {
   return (
@@ -53,10 +53,11 @@ const App: FC = function () {
             path="/authentication/profile-lock"
             element={<ProfileLockPage />}
           />
-          <Route
-            path="/e-commerce/billing"
+          {/* <Route
+            path="/e-commerce/transactions"
             element={<EcommerceBillingPage />}
-          />
+          /> */}
+          <Route path="/e-commerce/orders" element={<OrderPage />} />
           <Route
             path="/e-commerce/invoice"
             element={<EcommerceInvoicePage />}
@@ -67,7 +68,7 @@ const App: FC = function () {
           />
           <Route path="/users/feed" element={<UserFeedPage />} />
           <Route path="/users/list" element={<UserListPage />} />
-          <Route path="/users/profile" element={<UserProfilePage />} />
+          <Route path="/users/profile/:id" element={<UserProfilePage />} />
           <Route path="/users/settings" element={<UserSettingsPage />} />
         </Route>
       </Routes>

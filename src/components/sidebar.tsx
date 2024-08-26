@@ -12,6 +12,7 @@ import {
   HiSearch,
   HiShoppingBag,
   HiSwitchHorizontal,
+  HiTruck,
   HiUsers,
   HiViewGrid,
 } from "react-icons/hi";
@@ -82,12 +83,16 @@ const ExampleSidebar: FC = function () {
                 <Sidebar.Item href="/e-commerce/products" icon={HiArchive}>
                   Products
                 </Sidebar.Item>
-                <Sidebar.Item
-                  href="/e-commerce/billing"
+                <Sidebar.Item href="/e-commerce/orders" icon={HiTruck}>
+                  Orders
+                </Sidebar.Item>
+                {/* <Sidebar.Item
+                  href="/e-commerce/transactions"
                   icon={HiSwitchHorizontal}
                 >
                   Transactions
-                </Sidebar.Item>
+                </Sidebar.Item> */}
+
                 <Sidebar.Item
                   href="/users/list"
                   icon={HiUsers}

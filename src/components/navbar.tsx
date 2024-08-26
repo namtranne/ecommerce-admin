@@ -19,6 +19,7 @@ import {
   HiMenuAlt1,
   HiSearch,
   HiSwitchHorizontal,
+  HiTruck,
   HiUsers,
   HiViewGrid,
   HiX,
@@ -398,13 +399,22 @@ const AppDrawerDropdown: FC = function () {
             Products
           </div>
         </a>
-        <a
-          href="/e-commerce/billing"
+        {/* <a
+          href="/e-commerce/transactions"
           className="block rounded-lg p-4 text-center hover:bg-gray-100 dark:hover:bg-gray-600"
         >
           <HiSwitchHorizontal className="mx-auto mb-1 h-7 w-7 text-gray-500 dark:text-white" />
           <div className="text-sm font-medium text-gray-900 dark:text-white">
             Transactions
+          </div>
+        </a> */}
+        <a
+          href="/e-commerce/orders"
+          className="block rounded-lg p-4 text-center hover:bg-gray-100 dark:hover:bg-gray-600"
+        >
+          <HiTruck className="mx-auto mb-1 h-7 w-7 text-gray-500 dark:text-white" />
+          <div className="text-sm font-medium text-gray-900 dark:text-white">
+            Orders
           </div>
         </a>
         <a
