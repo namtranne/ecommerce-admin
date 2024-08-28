@@ -1,9 +1,29 @@
 import { Badge, Breadcrumb, Progress } from "flowbite-react";
-import type { FC } from "react";
+import { useEffect, type FC } from "react";
 import { HiBriefcase, HiHome, HiMap } from "react-icons/hi";
 import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
+import { useLocation } from "react-router";
+import { useOrders } from "../../hooks/userOrders";
+import Order from "../../components/order";
+
+interface User {
+  birthDay: string;
+  email: string;
+  firstName: string;
+  id: number;
+  lastName: string;
+  phoneNumber: string;
+  username: string;
+}
+
+interface ProfileIntroProps {
+  user: User;
+}
 
 const UserProfilePage: FC = function () {
+  const location = useLocation();
+  const { user } = location.state;
+
   return (
     <NavbarSidebarLayout>
       <div className="grid grid-cols-1 px-4 pt-6 xl:grid-cols-3 xl:gap-4">
@@ -23,20 +43,20 @@ const UserProfilePage: FC = function () {
           </h1>
         </div>
         <div className="col-span-full xl:col-auto">
-          <ProfileIntro />
-          <Skills />
-          <Hobbies />
+          <ProfileIntro user={user} />
+          {/* <Skills />
+          <Hobbies /> */}
         </div>
         <div className="col-span-2">
-          <GeneralInformation />
-          <ProgressBars />
+          <GeneralInformation user={user} />
+          {/* <ProgressBars /> */}
         </div>
       </div>
     </NavbarSidebarLayout>
   );
 };
 
-const ProfileIntro: FC = function () {
+const ProfileIntro: FC<ProfileIntroProps> = ({ user }) => {
   return (
     <div className="mb-4 rounded-lg bg-white p-4 shadow dark:bg-gray-800 sm:p-6 xl:p-8">
       <div className="sm:flex sm:space-x-4 xl:block xl:space-x-0">
@@ -46,8 +66,10 @@ const ProfileIntro: FC = function () {
           className="mb-2 h-20 w-20 rounded-lg"
         />
         <div>
-          <h2 className="text-xl font-bold dark:text-white">Jese Leos</h2>
-          <ul className="mt-2 space-y-1">
+          <h2 className="text-xl font-bold dark:text-white">
+            {user.firstName} {user.lastName}
+          </h2>
+          {/* <ul className="mt-2 space-y-1">
             <li className="flex items-center text-sm font-normal text-gray-500 dark:text-gray-400">
               <HiBriefcase className="mr-2 text-lg text-gray-900 dark:text-gray-100" />
               Front-end Developer
@@ -56,7 +78,7 @@ const ProfileIntro: FC = function () {
               <HiMap className="mr-2 text-lg text-gray-900 dark:text-gray-100" />
               San Francisco, USA
             </li>
-          </ul>
+          </ul> */}
         </div>
       </div>
       <div className="sm:flex xl:block xl:space-y-4">
@@ -67,16 +89,15 @@ const ProfileIntro: FC = function () {
               className="text-sm font-medium text-gray-900 dark:text-white"
               href="mailto:webmaster@flowbite.com"
             >
-              yourname@flowbite.com
+              {user.email}
             </a>
-            <div className="mt-4">Home address</div>
+            <div className="mt-4">Date of birth</div>
             <div className="mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              92 Miles Drive, Newark, NJ 07103, California, <br />
-              United States of America
+              {user.birthDay}
             </div>
             <div className="mt-4">Phone number</div>
             <div className="mb-2 text-sm font-medium text-gray-900 dark:text-white">
-              +00 123 456 789 / +12 345 678
+              {user.phoneNumber}
             </div>
           </address>
         </div>
@@ -93,7 +114,7 @@ const ProfileIntro: FC = function () {
           </p>
         </div>
       </div>
-      <div>
+      {/* <div>
         <h3 className="mb-2 text-base font-bold text-gray-900 dark:text-white">
           Software Skill
         </h3>
@@ -236,7 +257,7 @@ const ProfileIntro: FC = function () {
             />
           </svg>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
@@ -355,98 +376,21 @@ const Hobbies: FC = function () {
   );
 };
 
-const GeneralInformation: FC = function () {
+const GeneralInformation: FC<ProfileIntroProps> = ({ user }) => {
+  const {isLoading, data} = useOrders(user.id);
+  useEffect(() => {
+    if (user && user.id) {
+      if (data) {
+        console.log(data); // Handle the fetched data as needed
+      }
+    } else {
+      console.error("User is undefined or does not have an id");
+    }
+  }, [user, data]);
   return (
     <div className="mb-4 rounded-lg bg-white p-4 shadow dark:bg-gray-800 sm:p-6 xl:p-8">
-      <h3 className="mb-4 text-xl font-bold dark:text-white">
-        General information
-      </h3>
-      <dl className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
-        <div className="sm:col-span-2">
-          <dt className="text-lg font-medium text-gray-900 dark:text-white">
-            About me
-          </dt>
-          <dd className="mt-1 max-w-prose space-y-3 text-sm text-gray-500 dark:text-gray-400">
-            <p>
-              Tincidunt quam neque in cursus viverra orci, dapibus nec
-              tristique. Nullam ut sit dolor consectetur urna, dui cras nec sed.
-              Cursus risus congue arcu aenean posuere aliquam.
-            </p>
-            <p>
-              Et vivamus lorem pulvinar nascetur non. Pulvinar a sed platea
-              rhoncus ac mauris amet. Urna, sem pretium sit pretium urna,
-              senectus vitae. Scelerisque fermentum, cursus felis dui
-              suspendisse velit pharetra. Augue et duis cursus maecenas eget
-              quam lectus. Accumsan vitae nascetur pharetra rhoncus praesent
-              dictum risus suspendisse.
-            </p>
-          </dd>
-        </div>
-        <div>
-          <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-            Education
-          </dt>
-          <dd className="text-sm font-semibold text-gray-900 dark:text-white">
-            Thomas Jeff High School, Stanford University
-          </dd>
-        </div>
-        <div>
-          <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-            Work History
-          </dt>
-          <dd className="text-sm font-semibold text-gray-900 dark:text-white">
-            Twitch, Google, Apple
-          </dd>
-        </div>
-        <div>
-          <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-            Join Date
-          </dt>
-          <dd className="text-sm font-semibold text-gray-900 dark:text-white">
-            12-09-2021
-          </dd>
-        </div>
-        <div>
-          <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-            Languages
-          </dt>
-          <dd className="text-sm font-semibold text-gray-900 dark:text-white">
-            English, German, Italian, Spanish
-          </dd>
-        </div>
-        <div>
-          <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-            Organization
-          </dt>
-          <dd className="text-sm font-semibold text-gray-900 dark:text-white">
-            Themesberg LLC
-          </dd>
-        </div>
-        <div>
-          <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-            Role
-          </dt>
-          <dd className="text-sm font-semibold text-gray-900 dark:text-white">
-            Graphic Designer
-          </dd>
-        </div>
-        <div>
-          <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-            Department
-          </dt>
-          <dd className="text-sm font-semibold text-gray-900 dark:text-white">
-            Marketing
-          </dd>
-        </div>
-        <div>
-          <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-            Birthday
-          </dt>
-          <dd className="text-sm font-semibold text-gray-900 dark:text-white">
-            15-08-1990
-          </dd>
-        </div>
-      </dl>
+      <h3 className="mb-4 text-xl font-bold dark:text-white">All orders</h3>
+      <Order isLoading={isLoading} orders={data} />
     </div>
   );
 };
