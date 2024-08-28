@@ -433,7 +433,6 @@ const AppDrawerDropdown: FC = function () {
 
 const UserDropdown: FC = function () {
   const { data, isLoading } = useUserDetails();
-  console.log(data);
   return (
     <Dropdown
       arrowIcon={false}

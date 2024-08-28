@@ -10,11 +10,8 @@ import {
   HiInboxIn,
   HiInformationCircle,
   HiSearch,
-  HiShoppingBag,
-  HiSwitchHorizontal,
   HiTruck,
   HiUsers,
-  HiViewGrid,
 } from "react-icons/hi";
 
 import { useSidebarContext } from "../context/SidebarContext";

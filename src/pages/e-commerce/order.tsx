@@ -1,11 +1,14 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { Badge, Breadcrumb, Table } from "flowbite-react";
-import type { FC } from "react";
-import { HiHome } from "react-icons/hi";
+import { Badge, Breadcrumb, Select, Table } from "flowbite-react";
+import { useState, type FC } from "react";
+import { HiHome, HiPencilAlt } from "react-icons/hi";
 import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
 import { Datepicker } from "..";
 import { useOrders } from "../../hooks/userOrders";
 import { formatPriceAsVND } from "../../utils/util";
+import authAxios from "../../utils/axios";
+import { toast } from "react-toastify";
+import { QueryClient, useQueryClient } from "react-query";
 
 function OrderBadge({ order }: any) {
   // Determine the color based on paymentStatus
@@ -67,6 +70,40 @@ const OrderPage: FC = function () {
 };
 
 const Orders: FC<any> = function ({ orders }: any) {
+  const [orderId, setOrderId] = useState(null);
+  const queryClient = useQueryClient();
+  const orderStatuses = [
+    { value: "Waiting for Payment", label: "Waiting for Payment" },
+    { value: "Paid", label: "Paid" },
+    { value: "Preparing", label: "Preparing" },
+    { value: "Shipping", label: "Shipping" },
+    { value: "Delivered", label: "Delivered" },
+    { value: "Cancelled", label: "Cancelled" },
+  ];
+  const [selectedStatus, setSelectedStatus] = useState(null);
+
+  const handleChange = (event: any) => {
+    setSelectedStatus(event.target.value);
+  };
+
+  const handleEditOrder = async (order: any) => {
+    if (order.orderStatus === selectedStatus) {
+      return;
+    }
+    try {
+      const res = await authAxios.post("/admin/order", {
+        ...order,
+        orderStatus: selectedStatus,
+      });
+      toast.success(res.data.message);
+      queryClient.invalidateQueries(["orders"]);
+    } catch (error: any) {
+      toast.error(error.data.message);
+    }
+    setSelectedStatus(null);
+    setOrderId(null);
+  };
+
   console.log(orders);
   return (
     <div className="rounded-lg bg-white p-4 shadow dark:bg-gray-800 ">
@@ -83,6 +120,7 @@ const Orders: FC<any> = function ({ orders }: any) {
                   <Table.HeadCell>Order id</Table.HeadCell>
                   <Table.HeadCell>User</Table.HeadCell>
                   <Table.HeadCell>Date &amp; Time</Table.HeadCell>
+                  <Table.HeadCell>Address</Table.HeadCell>
                   <Table.HeadCell>Payment method</Table.HeadCell>
                   <Table.HeadCell>Amount</Table.HeadCell>
                   <Table.HeadCell>Payment Status</Table.HeadCell>
@@ -103,6 +141,11 @@ const Orders: FC<any> = function ({ orders }: any) {
                           {order.updatedDate
                             ? order.updatedDate
                             : order.createdDate}
+                        </Table.Cell>
+                        <Table.Cell className="whitespace-nowrap p-4 text-sm font-semibold text-gray-900 dark:text-white">
+                          <div className="w-40 overflow-scroll">
+                            {order.address}
+                          </div>
                         </Table.Cell>
                         <Table.Cell className="whitespace-nowrap p-4 text-sm dark:text-white text-blue-500 font-semibold">
                           {order.paymentMethod}
@@ -127,9 +170,44 @@ const Orders: FC<any> = function ({ orders }: any) {
                           </div>
                         </Table.Cell>
                         <Table.Cell className="whitespace-nowrap p-4">
-                          <div className="flex">
-                            <OrderBadge order={order} />
-                          </div>
+                          {orderId !== order.id ? (
+                            <div className="flex">
+                              <OrderBadge order={order} />
+                            </div>
+                          ) : (
+                            <select
+                              className="block py-2.5 px-0 w-40 text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer"
+                              value={selectedStatus || ""}
+                              onChange={handleChange}
+                            >
+                              {orderStatuses.map((status) => (
+                                <option key={status.value} value={status.value}>
+                                  {status.label}
+                                </option>
+                              ))}
+                            </select>
+                          )}
+                        </Table.Cell>
+                        <Table.Cell className="whitespace-nowrap p-4 text-center">
+                          {orderId !== order.id ? (
+                            <button
+                              className="flex"
+                              onClick={() => {
+                                setOrderId(order.id);
+                                setSelectedStatus(order.orderStatus);
+                              }}
+                            >
+                              <HiPencilAlt className="text-xl" />
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+                              onClick={() => handleEditOrder(order)}
+                            >
+                              Save
+                            </button>
+                          )}
                         </Table.Cell>
                       </Table.Row>
                     );
