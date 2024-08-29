@@ -57,14 +57,14 @@ const App: FC = function () {
         client.client.onStompError = (frame: any) => {
           console.error("STOMP error", frame.headers["message"]);
           console.error("Additional details:", frame.body);
-          toast.error("STOMP connection error");
+          // toast.error("STOMP connection error");
         };
 
         try {
           await client.activate();
         } catch (err) {
           console.error("Cannot connect to chat server:", err);
-          toast.error("Cannot connect to chat server");
+          // toast.error("Cannot connect to chat server");
         }
       }
     };

@@ -91,7 +91,7 @@ const Orders: FC<any> = function ({ orders }: any) {
       return;
     }
     try {
-      const res = await authAxios.post("/admin/order", {
+      const res = await authAxios.patch("/admin/order", {
         ...order,
         orderStatus: selectedStatus,
       });
