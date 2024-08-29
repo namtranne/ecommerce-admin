@@ -62,7 +62,7 @@ const ProfileIntro: FC<ProfileIntroProps> = ({ user }) => {
       <div className="sm:flex sm:space-x-4 xl:block xl:space-x-0">
         <img
           alt=""
-          src="../../images/users/jese-leos-2x.png"
+          src="https://cdn.vectorstock.com/i/750p/92/16/default-profile-picture-avatar-user-icon-vector-46389216.avif"
           className="mb-2 h-20 w-20 rounded-lg"
         />
         <div>
@@ -377,7 +377,7 @@ const Hobbies: FC = function () {
 };
 
 const GeneralInformation: FC<ProfileIntroProps> = ({ user }) => {
-  const {isLoading, data} = useOrders(user.id);
+  const { isLoading, data } = useOrders(user.id);
   useEffect(() => {
     if (user && user.id) {
       if (data) {

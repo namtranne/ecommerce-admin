@@ -88,10 +88,12 @@ const Orders: FC<any> = function ({ orders }: any) {
 
   const handleEditOrder = async (order: any) => {
     if (order.orderStatus === selectedStatus) {
+      setSelectedStatus(null);
+      setOrderId(null);
       return;
     }
     try {
-      const res = await authAxios.post("/admin/order", {
+      const res = await authAxios.patch("/admin/order", {
         ...order,
         orderStatus: selectedStatus,
       });
