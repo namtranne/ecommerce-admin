@@ -1,11 +1,13 @@
 import axios from "axios";
 
 export const getToken = () => {
-  return localStorage.getItem("token") ? localStorage.getItem("token") : "";
+  return localStorage.getItem("admin-token")
+    ? localStorage.getItem("admin-token")
+    : "";
 };
 
 export const isLogin = () => {
-  return localStorage.getItem("token") ? true : false;
+  return localStorage.getItem("admin-token") ? true : false;
 };
 
 const authAxios = axios.create({

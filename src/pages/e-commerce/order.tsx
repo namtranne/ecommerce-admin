@@ -80,22 +80,38 @@ const Orders: FC<any> = function ({ orders }: any) {
     { value: "Delivered", label: "Delivered" },
     { value: "Cancelled", label: "Cancelled" },
   ];
+  const paymentStatuses = [
+    { value: "Paid", label: "Paid" },
+    { value: "Pending", label: "Pending" },
+    { value: "Cancelled", label: "Cancelled" },
+  ];
+
+  // const
   const [selectedStatus, setSelectedStatus] = useState(null);
+  const [selectedPaymentStatus, setSelectedPaymentStatus] = useState(null);
 
   const handleChange = (event: any) => {
     setSelectedStatus(event.target.value);
   };
 
   const handleEditOrder = async (order: any) => {
-    if (order.orderStatus === selectedStatus) {
+    if (
+      order.orderStatus === selectedStatus &&
+      order.paymentStatus === selectedPaymentStatus
+    ) {
+      setSelectedPaymentStatus(null);
       setSelectedStatus(null);
       setOrderId(null);
       return;
     }
     try {
+      console.log(selectedPaymentStatus, order);
       const res = await authAxios.patch("/admin/order", {
         ...order,
-        orderStatus: selectedStatus,
+        orderStatus: selectedStatus ? selectedStatus : order.orderStatus,
+        paymentStatus: selectedPaymentStatus
+          ? selectedPaymentStatus
+          : order.paymentStatuses,
       });
       toast.success(res.data.message);
       queryClient.invalidateQueries(["orders"]);
@@ -103,10 +119,11 @@ const Orders: FC<any> = function ({ orders }: any) {
       toast.error(error.data.message);
     }
     setSelectedStatus(null);
+    setSelectedPaymentStatus(null);
     setOrderId(null);
   };
 
-  console.log(orders);
+  // console.log(orders);
   return (
     <div className="rounded-lg bg-white p-4 shadow dark:bg-gray-800 ">
       <div className="mb-4 flex items-center justify-between"></div>
@@ -156,20 +173,36 @@ const Orders: FC<any> = function ({ orders }: any) {
                           {formatPriceAsVND(order.total)}
                         </Table.Cell>
                         <Table.Cell className="whitespace-nowrap">
-                          <div className="flex">
-                            <Badge
-                              className="p-2"
-                              color={
-                                order.paymentStatus === "Paid"
-                                  ? "success"
-                                  : order.paymentStatus === "Pending"
-                                  ? "warning"
-                                  : "failure"
-                              }
+                          {orderId !== order.id ? (
+                            <div className="flex">
+                              <Badge
+                                className="p-2"
+                                color={
+                                  order.paymentStatus === "Paid"
+                                    ? "success"
+                                    : order.paymentStatus === "Pending"
+                                    ? "warning"
+                                    : "failure"
+                                }
+                              >
+                                {order.paymentStatus}
+                              </Badge>
+                            </div>
+                          ) : (
+                            <select
+                              className="block py-2.5 px-0 w-40 text-sm text-gray-500 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:border-gray-200 peer"
+                              value={selectedPaymentStatus || ""}
+                              onChange={(e: any) => {
+                                setSelectedPaymentStatus(e.target.value);
+                              }}
                             >
-                              {order.paymentStatus}
-                            </Badge>
-                          </div>
+                              {paymentStatuses.map((status) => (
+                                <option key={status.value} value={status.value}>
+                                  {status.label}
+                                </option>
+                              ))}
+                            </select>
+                          )}
                         </Table.Cell>
                         <Table.Cell className="whitespace-nowrap p-4">
                           {orderId !== order.id ? (
@@ -197,6 +230,7 @@ const Orders: FC<any> = function ({ orders }: any) {
                               onClick={() => {
                                 setOrderId(order.id);
                                 setSelectedStatus(order.orderStatus);
+                                setSelectedPaymentStatus(order.paymentStatus);
                               }}
                             >
                               <HiPencilAlt className="text-xl" />

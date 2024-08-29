@@ -14,7 +14,7 @@ export const login = async ({ username, password }) => {
       response.data.jwt ||
       response.data.data.accessToken;
     if (token) {
-      localStorage.setItem("token", token);
+      localStorage.setItem("admin-token", token);
     }
 
     return response.data;
@@ -30,7 +30,7 @@ export const signUp = async (credentials) => {
     // Assuming the response contains the JWT token in response.data.jwt or response.data.data.accessToken
     const token = response.data.jwt || response.data.data.accessToken;
     if (token) {
-      localStorage.setItem("token", token);
+      localStorage.setItem("admin-token", token);
     }
 
     return response.data;
