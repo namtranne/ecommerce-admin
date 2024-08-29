@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import {
   Breadcrumb,
@@ -26,9 +27,11 @@ import {
 } from "react-icons/hi";
 import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
 import { useUsers } from "../../hooks/useUser";
+import { useNavigate } from "react-router";
 
 const UserListPage: FC = function () {
   const { data: users, isLoading } = useUsers();
+
   return (
     <NavbarSidebarLayout isFooter={false}>
       <div className="block items-center justify-between border-b border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 sm:flex">
@@ -171,6 +174,11 @@ const AddUserModal: FC = function () {
 };
 
 const AllUsersTable: FC<any> = function ({ users, isLoading }: any) {
+  const navigate = useNavigate();
+  const handleViewProfile = (user: any) => {
+    console.log(user);
+    navigate(`/users/profile/${user.id}`, { state: { user } });
+  };
   return (
     <Table
       className="min-w-full divide-y divide-gray-200 dark:divide-gray-600"
@@ -206,7 +214,10 @@ const AllUsersTable: FC<any> = function ({ users, isLoading }: any) {
               <Table.Cell>
                 <div className="flex items-center gap-x-3 whitespace-nowrap">
                   <DeleteUserModal />
-                  <Button color="primary">
+                  <Button
+                    color="primary"
+                    onClick={() => handleViewProfile(user)}
+                  >
                     <div className="flex items-center gap-x-2">
                       <HiUser className="text-lg" />
                       View Profile
